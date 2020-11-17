@@ -80,7 +80,7 @@ namespace AddressBookforRestSharpTesting
                 Assert.AreEqual(item.pin, dataResponse.pin);
             }
         }
-        */
+        
 
         [TestMethod]
 
@@ -106,6 +106,20 @@ namespace AddressBookforRestSharpTesting
 
             Assert.AreEqual(dataResponse.name, "Mahi");
             Assert.AreEqual(dataResponse.city, "Chennai");
+        }
+
+        */
+
+        [TestMethod]
+
+        public void DeleteDatainAddressBookList()
+        {
+            //Arrange
+            RestRequest request = new RestRequest("AddressBook/3", Method.DELETE);
+            //Act
+            IRestResponse response = client.Execute(request);
+            //Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
         }
     }
 }
