@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace AddressBookforRestSharpTesting
         {
             client = new RestClient("http://localhost:4000");                      //Setting Link for the Client 
         }
-
+        /*
         private IRestResponse getAddressList()
         {
             //arrange
@@ -28,9 +29,9 @@ namespace AddressBookforRestSharpTesting
             return response;
         }
 
-
+        
         [TestMethod]
-        public void OnCallingReturnEmployeeList()
+        public void OnCallingReturnAddressList()
         {
             IRestResponse response = getAddressList();
 
@@ -46,6 +47,39 @@ namespace AddressBookforRestSharpTesting
                 Console.WriteLine("Pin Code: " + item.pin + " Name: " + item.name + " City: " + item.city);
             }
         }
+        */
 
+        [TestMethod]
+        public void OnAddingMultipleNewDatatoAddressBookList()
+        {
+            //Arrange
+            List<AddressBook> addressBookList = new List<AddressBook>();
+
+            addressBookList.Add(new AddressBook { name = "JB", pin = 4 });                         //For Multiple Adding Data to AddressBookList
+            addressBookList.Add(new AddressBook { name = "MS", pin = 5 });
+
+            foreach (var item in addressBookList)
+            {
+                //Act
+                RestRequest request = new RestRequest("/AddressBook", Method.POST);                  //For Adding Data to AddressBookList
+                JObject jObject = new JObject();
+                jObject.Add("name", item.name);
+                jObject.Add("pin", item.pin);
+
+                request.AddParameter("application/json", jObject, ParameterType.RequestBody);          //Validation of RestRequest
+
+
+                IRestResponse response = client.Execute(request);                                   //Executing the response
+
+
+                //Assert
+                Assert.AreEqual(response.StatusCode, HttpStatusCode.Created);                               //Checking Validation
+                AddressBook dataResponse = JsonConvert.DeserializeObject<AddressBook>(response.Content);          //Deserializing Object
+
+                Assert.AreEqual(item.name, dataResponse.name);
+                Assert.AreEqual(item.pin, dataResponse.pin);
+            }
+
+        }
     }
 }
