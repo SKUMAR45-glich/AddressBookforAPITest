@@ -47,7 +47,7 @@ namespace AddressBookforRestSharpTesting
                 Console.WriteLine("Pin Code: " + item.pin + " Name: " + item.name + " City: " + item.city);
             }
         }
-        */
+        
 
         [TestMethod]
         public void OnAddingMultipleNewDatatoAddressBookList()
@@ -79,7 +79,33 @@ namespace AddressBookforRestSharpTesting
                 Assert.AreEqual(item.name, dataResponse.name);
                 Assert.AreEqual(item.pin, dataResponse.pin);
             }
+        }
+        */
 
+        [TestMethod]
+
+        public void UpdatingDatainAddressBookList()
+        {
+            //Arrange
+            RestRequest request = new RestRequest("/AddressBook/update/2", Method.PUT);
+            JObject jobject = new JObject();
+
+            jobject.Add("name", "Mahi");
+            jobject.Add("city", "Chennai");
+
+            request.AddParameter("application/json", jobject, ParameterType.RequestBody);
+
+            //Act
+            IRestResponse response = client.Execute(request);
+
+
+            //Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+
+            AddressBook dataResponse = JsonConvert.DeserializeObject<AddressBook>(response.Content);
+
+            Assert.AreEqual(dataResponse.name, "Mahi");
+            Assert.AreEqual(dataResponse.city, "Chennai");
         }
     }
 }
